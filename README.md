@@ -14,7 +14,7 @@
 <pre>Download Latest Jar from <a href="https://github.com/Ebryx/SRePlay/releases/tag/v1.0" target=_blank>Release</a> and add in burpsuite extender</pre>
 
 ### What it does
-It is design for a scenario where we can't replay request more than once as request is getting Token from previous request's response and also when we can't make request with macros to get the token
+It is design for a scenario where we can't replay requests more than once as the request is getting Token from previous request's response and also when we can't make request with macros to get the token
 
 - It will extract the value of token from the last response and automatically update the request with the new token on the fly 
 
