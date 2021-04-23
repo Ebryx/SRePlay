@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class BurpExtender implements IBurpExtender, IHttpListener, ITab{
 
-    public String ExtensionName =  "Strict Replay (SRePlay)";
+    public String ExtensionName =  "SRePlay";
     public String TabName   =  "SRePlay";
     public String myHeader  = "SRePlay: Bypass";
 
@@ -30,7 +30,8 @@ public class BurpExtender implements IBurpExtender, IHttpListener, ITab{
     
     public SRePlay _SRePlay;
     public String _host;
-    public String _parameter;
+    public String _req_parameter;
+    public String _res_parameter;
     public String _value;
     
     
@@ -42,7 +43,9 @@ public class BurpExtender implements IBurpExtender, IHttpListener, ITab{
         this.stderr = new PrintWriter(callbacks.getStderr(), true);
         this.callbacks.setExtensionName(this.ExtensionName);
         this._SRePlay = new SRePlay(this);
-
+        
+       
+        
         this.callbacks.addSuiteTab(this);
         this.stdout.println("SRePlay - Installed !!!");
     }
@@ -67,7 +70,6 @@ public class BurpExtender implements IBurpExtender, IHttpListener, ITab{
         this.callbacks.removeHttpListener(this);
     }
 
-
     public String get_host(String _url){
         try{
             URL abc = new URL(_url);
@@ -77,13 +79,11 @@ public class BurpExtender implements IBurpExtender, IHttpListener, ITab{
             return _url;
         }
     }
-
-
+    
     @Override
     public String getTabCaption() {
         return this.TabName;
     }
-
 
     @Override
     public Component getUiComponent() {
@@ -102,8 +102,7 @@ public class BurpExtender implements IBurpExtender, IHttpListener, ITab{
         if(_fi < 0) { return messageBody; }
         
         _fi = _fi + _param.length() + 3;
-        int _si = messageBody.indexOf("\",", _fi);
-        
+        int _si = messageBody.indexOf("\"", _fi);
         
         messageBody = messageBody.substring(0, _fi) + _value + messageBody.substring(_si, messageBody.length());
         return messageBody;
@@ -112,25 +111,31 @@ public class BurpExtender implements IBurpExtender, IHttpListener, ITab{
     
     @Override
     public void processHttpMessage(int toolFlag, boolean messageIsRequest, IHttpRequestResponse messageInfo) {
+        if(this._repeater && (toolFlag == IBurpExtenderCallbacks.TOOL_REPEATER)) {}
+        else if(this._intruder && (toolFlag == IBurpExtenderCallbacks.TOOL_INTRUDER)) {}
+        else if(this._scanner && (toolFlag == IBurpExtenderCallbacks.TOOL_SCANNER)) {}
+        else { return; }
+
+        
         if(messageIsRequest){
             IRequestInfo reqInfo = helpers.analyzeRequest(messageInfo);
             String URL = new String(reqInfo.getUrl().toString());
             List headers = reqInfo.getHeaders();
-            
-            if(IBurpExtenderCallbacks.TOOL_REPEATER != toolFlag && IBurpExtenderCallbacks.TOOL_INTRUDER != toolFlag && IBurpExtenderCallbacks.TOOL_SCANNER != toolFlag){ return; }
-             
+                         
             if(this._host.contains(get_host(URL))){
+                print_output("PHTM-Req :: Host URL Detected", URL);
+                
                 byte[] _request = messageInfo.getRequest();
                 
                 if(reqInfo.getContentType() == 4){
-                    String messageBody = update_req_json(_request, _parameter, _value);
+                    String messageBody = update_req_json(_request, _req_parameter, _value);
                     headers.add(this.myHeader);
                     _request = this.helpers.buildHttpMessage(headers, messageBody.getBytes());
                 }
                 else {
-                    IParameter _p = this.helpers.getRequestParameter(_request, _parameter);
+                    IParameter _p = this.helpers.getRequestParameter(_request, _req_parameter);
                     if (_p == null || _p.getName().toString().length() == 0){ return; }
-                    IParameter _newP = this.helpers.buildParameter(_parameter, _value, _p.getType());
+                    IParameter _newP = this.helpers.buildParameter(_req_parameter, _value, _p.getType());
                     _request = this.helpers.removeParameter(_request, _p);
                     _request = this.helpers.addParameter(_request, _newP);
                     headers.add(this.myHeader);
@@ -139,8 +144,11 @@ public class BurpExtender implements IBurpExtender, IHttpListener, ITab{
                     String tmpreq = new String(_request);
                     String messageBody = new String(tmpreq.substring(reqInfo2.getBodyOffset())).trim();
                     _request = this.helpers.buildHttpMessage(headers, messageBody.getBytes());
+                    
                 }
-
+                
+                print_output("PHTM-Req :: Final Encrypted Request", new String(_request));
+                
                 messageInfo.setRequest(_request);
             }
             
@@ -150,18 +158,26 @@ public class BurpExtender implements IBurpExtender, IHttpListener, ITab{
             String URL = new String(reqInfo.getUrl().toString());
             List headers = reqInfo.getHeaders();
             
-            if(IBurpExtenderCallbacks.TOOL_REPEATER != toolFlag && IBurpExtenderCallbacks.TOOL_INTRUDER != toolFlag && IBurpExtenderCallbacks.TOOL_SCANNER != toolFlag){ return; }
-
             if(!headers.contains(this.myHeader)){
                 return;
             }
 
+            
             if(this._host.contains(get_host(URL))){
+                print_output("PHTM-Res :: Host URL Detected", URL);
+                
                 byte[] _response = messageInfo.getResponse();
-                IParameter _p = this.helpers.getRequestParameter(_response, _parameter);
+                IParameter _p = this.helpers.getRequestParameter(_response, _res_parameter);
                 if (_p == null || _p.getName().toString().length() == 0){ return; }
                 this._value = _p.getValue().toString();
+                
+                print_output("PHTM-Res :: new parameter value", _p.getValue().toString());
             }
+
         }
     }
+
+    
+    
+    
 }

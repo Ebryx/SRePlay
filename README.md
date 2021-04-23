@@ -5,7 +5,9 @@
 
 **Burpsuite Plugin to bypass strict RePlay protection**
 
-<img src="https://i.imgur.com/TQmGDqD.png" />
+<img src="https://i.imgur.com/dY17I6A.png" />
+
+
 
 ### Requirements
 - Burpsuite
@@ -18,13 +20,26 @@ It is design for a scenario where we can't replay requests more than once as the
 
 - It will extract the value of token from the last response and automatically update the request with the new token on the fly 
 
-### How it works
-- Provide the Host URL (e.g https://abc.com)
-- Provide token parameter name to capture and replace token
-- One initial value for parameter
-- Click on *`Start SRePlay`* 
+### Usage Guide
 
-<img src="https://i.imgur.com/bbaOXmH.png" />
+The detailed usage guide can be found <a href="">SRePlay - Bypass Strict Replay Protection</a>.
+
+### How it works
+- Provide `Host URL` 
+- Provide `Response parameter name` 
+- Provide `Request parameter name` 
+- Provide `Parameter Initial Value` 
+- Press `Start SRePlay`
+
+<img src="https://i.imgur.com/IfmjO7r.png">
+
+
+
+### SRePlay in Action
+
+<img src="https://i.imgur.com/69W1CL8.gif">
+
+
 
 ### Limitation
 - Will only work with single thread on Scanner and Intruder 
@@ -36,4 +51,3 @@ It is design for a scenario where we can't replay requests more than once as the
 
 ### Improvements
 - Multi-session / threading support
-- Repeater / Intruder / Scanner UI customization
