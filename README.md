@@ -3,7 +3,7 @@
 [![GitHub version](https://d25lcipzij17d.cloudfront.net/badge.svg?id=gh&type=0.2&v=1.0&x2=0)](http://badge.fury.io/gh/boennemann%2Fbadges)
 [![Open Source Love](https://badges.frapsoft.com/os/mit/mit.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
 
-**Burpsuite Plugin to bypass strict RePlay protection**
+**Burpsuite Plugin to bypass RePlay protection**
 
 <img src="https://i.imgur.com/dY17I6A.png" />
 
@@ -22,7 +22,7 @@ It is design for a scenario where we can't replay requests more than once as the
 
 ### Usage Guide
 
-The detailed usage guide can be found <a href="">SRePlay - Bypass Strict Replay Protection</a>.
+The detailed usage guide can be found <a href="https://n00b.sh/posts/sreplay/" target=_blank>SRePlay - Bypass Replay Protection</a>.
 
 ### How it works
 - Provide `Host URL` 
