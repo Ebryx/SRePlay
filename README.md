@@ -13,7 +13,7 @@
 - Burpsuite
 
 ### How to Install
-<pre>Download Latest Jar from <a href="https://github.com/Ebryx/SRePlay/releases/tag/v1.0" target=_blank>Release</a> and add in burpsuite extender</pre>
+<pre>Download Latest Jar from <a href="https://github.com/Ebryx/SRePlay/releases/tag/v2.0" target=_blank>Release</a> and add in burpsuite extender</pre>
 
 ### What it does
 It is design for a scenario where we can't replay requests more than once as the request is getting Token from previous request's response and also when we can't make request with macros to get the token
